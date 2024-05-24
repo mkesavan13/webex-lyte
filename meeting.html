@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webex Lyte</title>
+    <link rel="stylesheet" href="./meeting.css" type="text/css">
+    <link rel="icon" href="./images/image2.png" type="icon/x-image">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+<body id="body">
+        <!-- Bootstrap Modal -->
+<div class="modal fade" id="joinMeetingModal" tabindex="-1" role="dialog" aria-labelledby="joinMeetingModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" id="modal1">
+        <div class="modal-body">
+          <!-- Remote Video -->
+          <video id="remoteVideo" autoplay style="width:912px ; height: 513px; border-radius: 25px;"></video>
+          <audio id="remoteAudio" autoplay hidden></audio>
+          <!-- Leave and Unmute Buttons -->
+          <div class="d-flex justify-content-between mt-2">
+            <button id="leaveMeetingButton" class="btn btn-danger">Leave</button>
+            <button id="Microphone" class="btn btn-primary mt-2"><img src="./images/mute.png" style="width: 25px; height: 25px;">Unmute</button>
+          </div>
+          <!-- Local Video -->
+          <div class="local-video-container" style="position: absolute; bottom: 10px; right: 10px;">
+            <video id="localVideo" autoplay muted style="width: 320px; height: 240px; border-radius: 20px;"></video>
+            <button id="Video" class="btn btn-primary mt-2"><img src="./images/stop.png" style="width: 25px; height: 25px;">Start</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+        <div class="container3">
+            <button id="joinMeetingButton">Join</button>
+        </div>
+    </div>
+    <script crossorigin src="https://unpkg.com/webex@^1/umd/webex.min.js"></script>
+<script src="meeting.js" type="module"></script>
+</body>
+</html>
