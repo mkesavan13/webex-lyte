@@ -1,0 +1,97 @@
+body {
+    background-color: #1c1c1c;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+}
+
+h1 {
+    color: #00aaff;
+}
+
+h2 {
+    color: #3780e0;
+}
+
+.meeting-section {
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #282828;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.meeting {
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #333;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.meeting:hover {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
+.meeting h2 {
+    font-size: 1.25em;
+}
+
+.meeting p {
+    margin: 5px 0;
+}
+
+#meeting-details {
+    border: 3px solid #444;
+    border-radius: 5px;
+    padding: 30px;
+    background-color: #282828;
+    
+}
+
+#meeting-details p {
+    margin: 10px 5;
+}
+
+.join-btn {
+    background-color: hsl(119, 59%, 22%);
+    color: white;
+    margin-top: 10px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.join-btn:hover {
+    background-color: #14db71;
+}
+#meeting-container {
+    display: flex;
+    height: calc(100vh - 60px); /* Adjust height based on header and footer if any */
+}
+#meeting-lists {
+    flex: 1;
+    max-width: 550px;
+    border-right: 1px solid #444;
+    padding: 20px;
+    overflow-y: auto;
+}
+.meeting-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-left: 10px;
+}
+
+.meeting-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.meeting-list::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
+}
