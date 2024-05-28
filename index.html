@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webex Meetings</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">List of Meetings</h1>
+        <div id="meeting-container" class="row">
+            <div id="meeting-lists" class="col-md-4">
+                <div class="meeting-section mb-4">
+                    <h2>Ongoing Meetings</h2>
+                    <div id="ongoing-meeting-list" class="meeting-list"></div>
+                </div>
+                <div class="meeting-section">
+                    <h2>Upcoming Meetings</h2>
+                    <div id="upcoming-meeting-list" class="meeting-list"></div>
+                </div>
+            </div>
+            <div id="meeting-details" class="col-md-8"></div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
