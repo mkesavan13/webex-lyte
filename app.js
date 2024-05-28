@@ -1,6 +1,6 @@
 // Prerequisite data SIP and Access Token(Hard Coded)
-const myAccessToken = "OTRmNDVkZmEtZWNlOC00M2ZlLTkxZjItZjhlY2YwNDBlYjcyNTY3ZmQ2YjMtY2Iw_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f";
-const sip = "pasoma.cisco@webex.com";
+const myAccessToken = "";
+const sip = "";
 const webhookApiUrl = 'https://webexapis.com/v1/meetings';
 let ongoingMeetingListElement;
 let upcomingMeetingListElement;
