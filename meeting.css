@@ -1,0 +1,169 @@
+body, html {
+    width: 100%;
+    height: 100%;
+    font-family: 'Times New Roman', Times, serif;
+    background-color: black;
+    margin: 0;
+    padding: 0;
+    color: white; /* Set text color to white */
+}
+
+#body{
+    background-color: black;
+}
+
+/* Container for the Join button */
+.container3 {
+    position: absolute;
+    background-color: black;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the container */
+}
+
+/* Style for the Join button */
+#joinMeetingButton {
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    padding: 10px 20px;
+    background-color: rgb(46, 160, 8);
+    font-size: 1.5rem;
+    transition: background-color 0.3s ease; /* Smooth background color change on hover */
+}
+
+#joinMeetingButton:hover {
+    background-color: rgb(46, 160, 8); /* Darken button color on hover */
+}
+
+/* Modal Content Styling */
+.modal-content {
+    background-color: black;
+    border-radius: 25px;
+    border: none;
+    width: 150%; /* Set width to 1000px */
+    height: 570px; /* Set height to 570px */
+    margin: auto; /* Center the modal box */
+    position: relative; /* Position relative for child positioning */
+    top:50%;
+}
+#modal1{
+    width: 1000px;
+    height: 617px;
+    position: relative;
+    top:50px;
+    left: -12%;
+    border-radius: 20px;
+    background-color: rgb(96, 96, 96);
+}
+/* Remote Video Styles */
+#remoteVideo {
+    width: 912px; /* Set width */
+    height: 513px; /* Set height */
+    border-radius: 25px;
+    margin: 5px auto 0;
+    position: relative;
+    left: 3%; /* Center video and position it 5px from the top */
+}
+#remoteShare{
+    width: 912px; /* Set width */
+    height: 513px; 
+
+}
+/* Modal Body Styling */
+.modal-body {
+    position: relative; /* Set position to relative for absolute positioning of local video */
+}
+
+/* Leave and Unmute Buttons */
+.d-flex {
+    display: flex;
+    justify-content: center; /* Center the buttons */
+}
+
+/* Unmute Button Style */
+#microphone {
+    background-color: black;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 100px;
+    padding: 10px 19px;
+    position: relative;
+    top: -16px;
+    left: -54%;
+}
+
+/* Style for the image inside the Microphone button */
+#microphone img ,#leaveMeetingButton img ,#video img{
+    width: 25px;
+    height: 25px;
+}
+
+/* Leave Meeting Button Style */
+#leaveMeetingButton {
+    background-color: rgb(233, 52, 52);
+    position:relative;
+    border-radius: 100px;
+    top:-16px;
+    left:50%;
+    color: white;
+    border: none;
+    padding: 17px 17px;
+    margin-top: 10px;
+}
+
+/* Local Video and Start Button */
+.local-video-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+/* Style for the local video */
+#localVideo {
+    width: 320px;
+    height: 240px;
+    border-radius: 20px;
+    background-image: url("./images/image1.png");
+    position: absolute;
+}
+
+/* Start Video Button Style */
+#video {
+    background-color: black;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 100px;
+    padding: 14px 15px;
+    position: relative;
+    top: -2px;
+    left:260px;
+}
+
+/* Responsiveness */
+@media (max-width: 520px) {
+    .local-video-container {
+        width: 100%;
+        bottom: 0;
+        right: 0;
+        padding: 0 10px; /* Add padding on smaller screens */
+    }
+
+    #localVideo,
+    #video {
+        width: calc(100% - 20px); /* Full width minus padding */
+    }
+
+    /* Adjust modal body padding for smaller screens */
+    .modal-body {
+        padding-bottom: 260px;
+    }
+}
+.blur {
+    backdrop-filter: blur(10px); /* Adjust the blur radius as needed */
+}
