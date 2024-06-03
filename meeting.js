@@ -1,6 +1,6 @@
 // 1)Access token and SIP URI (Hard Coded).
-const accessToken = "";
-const sipAddress = "";
+const accessToken = "NTZlNmFhNTYtZGExOC00OWZiLTg5MmMtOGRhM2JhZWQ0MDk4MmU0YmIyYmMtOTBk_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f";
+const sipAddress = "pkalla.cisco@webex.com";
 // 2)Setting Media Variables.
 const joinMeetingButton = document.getElementById('joinMeetingButton');
 const leaveMeetingButton = document.getElementById('leaveMeetingButton');
@@ -227,6 +227,18 @@ function cleanUpMedia() {
       } finally {
         elem.srcObject = null;
       }
+    }
+  });
+}
+//16)Added the Local Share System using Share Button.
+document.getElementById("share").addEventListener('click',localshare)
+async function localshare(){
+  const [localShareVideoStream, localShareAudioStream] =
+  await webex.meetings.mediaHelpers.createDisplayStreamWithAudio();
+   await createdMeeting.publishStreams({
+    screenShare: {
+      video: localShareVideoStream,
+      audio: localShareAudioStream,
     }
   });
 }
