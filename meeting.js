@@ -1,6 +1,6 @@
 // 1)Access token and SIP URI (Hard Coded).
-const accessToken = "NTZlNmFhNTYtZGExOC00OWZiLTg5MmMtOGRhM2JhZWQ0MDk4MmU0YmIyYmMtOTBk_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f";
-const sipAddress = "pkalla.cisco@webex.com";
+const accessToken = "";
+const sipAddress = "";
 // 2)Setting Media Variables.
 const joinMeetingButton = document.getElementById('joinMeetingButton');
 const leaveMeetingButton = document.getElementById('leaveMeetingButton');
