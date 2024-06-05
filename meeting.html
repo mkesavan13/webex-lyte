@@ -30,15 +30,18 @@
           <!-- Local Video ,Start/Stop Button ,Unmute/Mute Button -->
           <div class="local-video-container" draggable="true">
             <video id="localVideo" autoplay muted></video>
-            <button id="microphone" class="btn btn-primary mt-2" title="Mute/UnMute Audio"><img src="./images/voice.png"></button>
+            <div id="muteButtonContainer">
+              <button id="microphone" class="btn btn-primary mt-2" title="Mute/UnMute Audio"><img src="./images/voice.png"></button>
+              <div class="enableBNR">
+                  <div class="enableBNR1" id="bnr">BNR</div>
+              </div>
+            </div>
             <button id="video" class="btn btn-primary mt-2" title="Start/Stop Video"><img src="./images/video-camera.png"></button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
-  
         <div class="container3">
             <button id="joinMeetingButton">Join</button>
         </div>
@@ -47,5 +50,3 @@
 <script src="meeting.js" type="module"></script>
 </body>
 </html>
-
-

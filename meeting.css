@@ -94,7 +94,7 @@ body, html {
     padding: 14px 15px;
     position: relative;
     top: 50px;
-    left: 264px;
+    left: 265px;
 }
 
 /* Style for the image inside the Microphone button */
@@ -154,7 +154,49 @@ body, html {
     padding: 14px 15px;
     position: relative;
     top: -8px;
-    left:205px;
+    left:206px;
+}
+
+#muteButtonContainer {
+    position: relative;
+    display: inline-block;
+    border-radius: 20px;
+}
+
+.enableBNR {
+    display: none;
+    position: absolute;
+    border-radius: 20px;
+    background-color: #e4e4e4;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    top: 115px; /* Adjust the position as needed */
+    left: 250px; /* Adjust the position as needed */
+}
+
+.enableBNR .enableBNR1 {
+    color: black;
+    text-align: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+}
+
+.enableBNR .enableBNR1:hover {
+    background-color: #e4e4e4;
+    border-radius: 20px;
+    animation: stay-hover 10s forwards;
+}
+
+#muteButtonContainer:hover .enableBNR {
+    display: block;
+}
+
+.selected::before {
+    content: '✓ ';
+    color: black;
 }
 
 /* Responsiveness */

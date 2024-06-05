@@ -9,6 +9,8 @@ const videoButton = document.getElementById('video');
 const RemoteVideo = document.getElementById('remoteVideo');
 const RemoteAudio = document.getElementById('remoteAudio');
 const localVideo = document.getElementById('localVideo');
+const bnrButton=document.getElementById('bnr');
+const shareButton=document.getElementById('share');
 
 // 3)Setting Initiated Variables to Null.
 let createdMeeting = null;
@@ -166,7 +168,7 @@ async function toggleVideo() {
     const cameraStream = await webex.meetings.mediaHelpers.createCameraStream({ width: 640, height: 480 });
     localStream.camera = cameraStream;
     localVideo.srcObject = cameraStream.outputStream;
-    await createdMeeting.publishStreams({ camera: cameraStream });
+    await createdMeeting.publishStreams({ camera: localStream.camera });
     // Update button to display "Stop"
     videoButton.innerHTML = '<img src="./images/video-camera.png" style="width: 25px; height: 25px;">';
     isVideoStarted = true;
@@ -180,7 +182,7 @@ async function toggleMicrophone() {
     return;
   }
   // Unmute Local Audio
-  if (isMuted) {
+  if (!isMuted) {
     try {
       const microphoneStream = await webex.meetings.mediaHelpers.createMicrophoneStream({
         echoCancellation: true,
@@ -188,9 +190,9 @@ async function toggleMicrophone() {
       });
 
       localStream.microphone = microphoneStream;
-      await createdMeeting.publishStreams({microphone: microphoneStream});
+      await createdMeeting.publishStreams({microphone: localStream.microphone});
       microphoneButton.innerHTML = '<img src="./images/voice.png" style="width: 25px; height: 25px;">';
-      isMuted = false;
+      isMuted = true;
     } catch (error) {
       console.error('Error creating microphone stream:', error);
     }
@@ -200,9 +202,10 @@ async function toggleMicrophone() {
     if (localStream.microphone) {
       await createdMeeting.unpublishStreams([localStream.microphone]);
       localStream.microphone = null;
+      bnrButton.classList.remove('selected');
     }
     microphoneButton.innerHTML = '<img src="./images/mute.png" style="width: 25px; height: 25px;">';
-    isMuted = true;
+    isMuted = false;
   }
 }
 // 14) Reset All Streams using reset function inside calling cleanupMedia Function.
@@ -231,7 +234,7 @@ function cleanUpMedia() {
   });
 }
 //16)Added the Local Share System using Share Button.
-document.getElementById("share").addEventListener('click',localshare)
+shareButton.addEventListener('click',localshare)
 async function localshare(){
   const [localShareVideoStream, localShareAudioStream] =
   await webex.meetings.mediaHelpers.createDisplayStreamWithAudio();
@@ -241,4 +244,33 @@ async function localshare(){
       audio: localShareAudioStream,
     }
   });
+}
+//17) Enabled BNR using Event Listeners and Functions.
+bnrButton.addEventListener('click',toggleBNR);
+  async function toggleBNR() {
+    let bnrEffect=null;
+    if (!localStream || !localStream.microphone) {
+        console.error('No local microphone stream available.');
+        return;
+    }
+
+    try {
+        if (!bnrEffect) {
+            bnrEffect = await webex.meetings.createNoiseReductionEffect();
+            await localStream.microphone.addEffect(bnrEffect);
+        }
+
+        if (bnrEffect.isEnabled) {
+            await bnrEffect.disable();
+            bnrButton.classList.remove('selected');
+
+            console.log('BNR disabled');
+        } else {
+            await bnrEffect.enable();
+            console.log('BNR enabled');
+            bnrButton.classList.add('selected');
+        }
+    } catch (error) {
+        console.error('Error toggling BNR:', error);
+    }
 }
