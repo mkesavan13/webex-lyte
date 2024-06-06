@@ -1,6 +1,7 @@
 // 1)Access token and SIP URI (Hard Coded).
-const accessToken = "";
-const sipAddress = "";
+const accessToken = "YTc5YjE4YTQtYTRmMi00MGU0LThkMzUtNGIyMGE5ZDhhYTZiNzliN2YxYWUtM2Ri_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f";
+const sipAddress = "pkalla.cisco@webex.com";
+
 // 2)Setting Media Variables.
 const joinMeetingButton = document.getElementById('joinMeetingButton');
 const leaveMeetingButton = document.getElementById('leaveMeetingButton');
@@ -9,8 +10,9 @@ const videoButton = document.getElementById('video');
 const RemoteVideo = document.getElementById('remoteVideo');
 const RemoteAudio = document.getElementById('remoteAudio');
 const localVideo = document.getElementById('localVideo');
-const bnrButton=document.getElementById('bnr');
 const shareButton=document.getElementById('share');
+const bnrButton=document.getElementById('bnr');
+const vbgButton=document.getElementById('vbg');
 
 // 3)Setting Initiated Variables to Null.
 let createdMeeting = null;
@@ -39,6 +41,7 @@ async function createMeeting() {
     throw error;
   }
 }
+
 // 7) Set Media Listeners(Remote Streams)
 function setMediaListeners() {
   if (!createdMeeting) {
@@ -72,6 +75,7 @@ function setMediaListeners() {
     }
   });
 }
+
 // 8) Get Local Streams Function.
 async function getLocalStreams() {
   try {
@@ -92,6 +96,7 @@ async function getLocalStreams() {
     throw error;
   }
 }
+
 // 9) Joinning the Meeting and add Local Streams to meeting.
 async function joinMeetingWithMedia(localStreams) {
   try {
@@ -115,6 +120,7 @@ async function joinMeetingWithMedia(localStreams) {
     throw error;
   }
 }
+
 // 10) Join Meeting Listener and Calling Above Functions(6 to 9).
 joinMeetingButton.addEventListener('click',joinMeeting);
 async function joinMeeting() {
@@ -132,8 +138,9 @@ async function joinMeeting() {
     reset();
   }
 }
+
 // 11) Leaving Meeting Listener and Function.
-document.getElementById('leaveMeetingButton').addEventListener('click',leaveMeeting);
+leaveMeetingButton.addEventListener('click',leaveMeeting);
 async function leaveMeeting() {
   try {
     const confirmLeave = window.confirm("Are you sure you want to leave the meeting?");
@@ -149,6 +156,7 @@ async function leaveMeeting() {
     
   }
 }
+
 // 12) Start and Stop Button using toggleVideo Function.
 videoButton.addEventListener('click',toggleVideo);
 async function toggleVideo() {
@@ -174,6 +182,7 @@ async function toggleVideo() {
     isVideoStarted = true;
   }
 }
+
 // 13) Mute and UnMute Button using toggleMicrophone Function
 microphoneButton.addEventListener('click',toggleMicrophone);
 async function toggleMicrophone() {
@@ -208,6 +217,7 @@ async function toggleMicrophone() {
     isMuted = false;
   }
 }
+
 // 14) Reset All Streams using reset function inside calling cleanupMedia Function.
 function reset() {
   $('#joinMeetingModal').modal('hide');
@@ -233,6 +243,7 @@ function cleanUpMedia() {
     }
   });
 }
+
 //16)Added the Local Share System using Share Button.
 shareButton.addEventListener('click',localshare)
 async function localshare(){
@@ -245,7 +256,8 @@ async function localshare(){
     }
   });
 }
-//17) Enabled BNR using Event Listeners and Functions.
+
+//17) Enabled BNR using Event Listeners and toggleBNR Function.
 bnrButton.addEventListener('click',toggleBNR);
   async function toggleBNR() {
     let bnrEffect=null;
@@ -274,3 +286,35 @@ bnrButton.addEventListener('click',toggleBNR);
         console.error('Error toggling BNR:', error);
     }
 }
+
+//18) Enabled VBG using Event Listeners and toggleVBG Function.
+document.getElementById('vbg').addEventListener('click',toggleVBG);
+async function toggleVBG(){
+  let vbgEffect=null;
+
+  if (!localStream || !localStream.camera || !localStream.camera.outputStream) {
+    console.error('No local video stream available.');
+    return;
+  }
+  try{
+    if(!vbgEffect){
+      vbgEffect=await webex.meetings.createVirtualBackgroundEffect();
+      await localStream.camera.addEffect(vbgEffect);
+    }
+    if(vbgEffect.isEnabled){
+      await vbgEffect.disable();
+      bnrButton.classList.remove('selected');
+
+    }else{
+      await vbgEffect.enable();
+            console.log('VBG enabled');
+            vbgButton.classList.add('selected');
+      
+    }
+}
+catch(error){
+  console.error('Error toggling VBG:', error);
+
+}
+}
+

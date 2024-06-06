@@ -171,8 +171,8 @@ body, html {
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
-    top: 115px; /* Adjust the position as needed */
-    left: 250px; /* Adjust the position as needed */
+    top: 62px; /* Adjust the position as needed */
+    left: 106px; /* Adjust the position as needed */
 }
 
 .enableBNR .enableBNR1 {
@@ -197,6 +197,41 @@ body, html {
 .selected::before {
     content: '✓ ';
     color: black;
+}
+#videoButtonContainer {
+    position: relative;
+    display: inline-block;
+    border-radius: 20px;
+}
+
+.enableVBG {
+    display: none;
+    position: absolute;
+    border-radius: 20px;
+    background-color: #e4e4e4;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    top: 2px; /* Adjust the position as needed */
+    left: 47px; /* Adjust the position as needed */
+}
+
+.enableVBG .enableVBG1 {
+    color: black;
+    text-align: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+}
+
+.enableVBG .enableVBG1:hover {
+    background-color: #e4e4e4;
+    border-radius: 20px;
+}
+
+#videoButtonContainer:hover .enableVBG {
+    display: block;
 }
 
 /* Responsiveness */
