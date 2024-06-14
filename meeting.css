@@ -91,18 +91,20 @@ body, html {
     font-weight: 600;
     border: none;
     border-radius: 100px;
-    padding: 14px 15px;
+    padding: 14px 21px;
     position: relative;
     top: 50px;
     left: 265px;
 }
-
-/* Style for the image inside the Microphone button */
-#microphone img ,#leaveMeetingButton img ,#video img,#share img{
-    width: 25px;
-    height: 25px;
+.green{
+    color: greenyellow;
 }
-
+.red{
+    color: red;
+}
+.icon{
+    font-size: 15px;
+}
 /* Leave Meeting Button Style */
 #leaveMeetingButton {
     background-color: rgb(233, 52, 52);
@@ -112,7 +114,7 @@ body, html {
     left:51%;
     color: white;
     border: none;
-    padding: 17px 17px;
+    padding: 17px 22px;
     margin-top: 10px;
 }
 /* Local Share*/
@@ -124,7 +126,7 @@ body, html {
     left:-52%;
     color: white;
     border: none;
-    padding: 17px 17px;
+    padding: 17px 23px;
     margin-top: 10px;
 
 }
@@ -140,10 +142,20 @@ body, html {
     width: 320px;
     height: 240px;
     border-radius: 20px;
-    background-image: url("./images/image1.png");
+    background-color: rgb(192, 190, 190);
+    content: "LocalVideo";
+    color: #e4e4e4;
     position: absolute;
 }
-
+#localvideoimage{
+    color: red;
+    width:90px;
+    height:90px;
+    position:absolute;
+    top:115%;
+    left:100%;
+    display: none;
+}
 /* Start Video Button Style */
 #video {
     background-color: black;
@@ -151,7 +163,7 @@ body, html {
     font-weight: 600;
     border: none;
     border-radius: 100px;
-    padding: 14px 15px;
+    padding: 14px 17px;
     position: relative;
     top: -8px;
     left:206px;
