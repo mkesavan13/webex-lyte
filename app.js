@@ -1,6 +1,6 @@
 // Prerequisite data SIP and Access Token(Hard Coded)
-const myAccessToken = "MTcwN2UzNGItNzFlMS00Njc2LTk3ZWItNjc1MDIxNDkzNzQ4MWVkYzEzZTctNWJk_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f";
-const sip = "pasoma.cisco@webex.com";
+const myAccessToken = "";
+const sip = "";
 // Function to format date to ISO string with timezone offset
 function toISOStringWithOffset(date) {
     const tzo = -date.getTimezoneOffset(),
