@@ -113,6 +113,8 @@ async function joinMeetingWithMedia(localStreams) {
         allowMediaInLobby: true,
         shareAudioEnabled: false,
         shareVideoEnabled: false,
+        audioEnabled:true,
+        videoEnabled:true,
         localStreams,      
       },
     };
