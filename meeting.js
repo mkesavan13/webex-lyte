@@ -13,6 +13,9 @@ const localVideo = document.getElementById('localVideo');
 const shareButton = document.getElementById('share');
 const bnrButton = document.getElementById('bnr');
 const vbgButton = document.getElementById('vbg');
+const mirrorButton = document.getElementById('mirror');
+const icon = document.getElementById('mic-icon');
+const icon1 = document.getElementById('video-icon');
 
 // 3) Setting Initiated Variables to Null.
 let createdMeeting = null;
@@ -20,6 +23,7 @@ let localStream = null;
 let isMuted = true;
 let isVideoStarted = true;
 let vbgEffect = false;
+let mirrorEffect = false;
 
 // 4) Webex Initialize.
 const webex = window.Webex.init({
@@ -88,7 +92,7 @@ async function getLocalStreams() {
       noiseSuppression: true,
     });
 
-    const cameraStream = await webex.meetings.mediaHelpers.createCameraStream({ width: 640, height: 480 });
+    const cameraStream = await webex.meetings.mediaHelpers.createCameraStream();
     localVideo.srcObject = cameraStream.outputStream;
 
     return {
@@ -151,22 +155,47 @@ async function leaveMeeting() {
       await createdMeeting.leave();
       joinMeetingButton.style.display = 'block';
       $('#joinMeetingModal').modal('hide');
-      videoButton.innerHTML = '<i class="fas fa-video icon green"></i>';
-      microphoneButton.innerHTML = '<i class="fas fa-microphone icon green"></i>';
-      microphoneButton.style.padding = "14px 21px";
+      //for microphone icon reset
+      if (icon.classList.contains('fa-microphone-slash')) {
+        icon.classList.remove('fa-microphone-slash', 'red');
+        icon.classList.add('fa-microphone', 'green');
+      }
+      // for video icon reset
+      if (icon1.classList.contains('fa-video-slash')) {
+        icon1.classList.add('fa-video', 'green');
+        icon1.classList.remove('fa-video-slash', 'red');
+      }
       bnrButton.classList.remove('selected');
       vbgButton.classList.remove('selected');
-      createdMeeting=null;
+      createdMeeting = null;
       localStream = null;
       isMuted = true;
       isVideoStarted = true;
       vbgEffect = false;
-      
+      mirrorEffect = false;
     }
   } catch (error) {
     console.error('Error leaving meeting:', error);
+    joinMeetingButton.style.display = 'block';
     $('#joinMeetingModal').modal('hide');
-
+    //for microphone icon reset
+    if (icon.classList.contains('fa-microphone-slash')) {
+      icon.classList.remove('fa-microphone-slash', 'red');
+      icon.classList.add('fa-microphone', 'green');
+    }
+    // for video icon reset
+    if (icon1.classList.contains('fa-video-slash')) {
+      icon1.classList.add('fa-video', 'green');
+      icon1.classList.remove('fa-video-slash', 'red');
+    }
+    bnrButton.classList.remove('selected');
+    vbgButton.classList.remove('selected');
+    createdMeeting = null;
+    localStream = null;
+    isMuted = true;
+    isVideoStarted = true;
+    vbgEffect = false;
+    mirrorEffect = false;
   }
 }
 
@@ -181,21 +210,27 @@ async function toggleVideo() {
   if (isVideoStarted) {
     await createdMeeting.unpublishStreams([localStream.camera]);
     localVideo.srcObject = null;
+    icon1.classList.remove('fa-video', 'green');
+    icon1.classList.add('fa-video-slash', 'red');
     document.getElementById("localvideoimage").style.display = "block";
-    videoButton.innerHTML = '<i class="fas fa-video-slash icon red"></i>';
+    
     isVideoStarted = false;
     vbgButton.classList.remove('selected');
     if (vbgEffect && vbgEffect.isEnabled) {
       await vbgEffect.disable();
     }
+    vbgEffect = false;
+    mirrorEffect = false;
+
   } 
   // Start Video
   else {
-    const cameraStream = await webex.meetings.mediaHelpers.createCameraStream({ width: 640, height: 480 });
+    const cameraStream = await webex.meetings.mediaHelpers.createCameraStream();
     localStream.camera = cameraStream;
     localVideo.srcObject = cameraStream.outputStream;
     await createdMeeting.publishStreams({ camera: localStream.camera });
-    videoButton.innerHTML = '<i class="fas fa-video icon green"></i>';
+    icon1.classList.add('fa-video', 'green');
+    icon1.classList.remove('fa-video-slash', 'red');
     document.getElementById("localvideoimage").style.display = "none";
     isVideoStarted = true;
   }
@@ -218,8 +253,8 @@ async function toggleMicrophone() {
 
       localStream.microphone = microphoneStream;
       await createdMeeting.publishStreams({ microphone: localStream.microphone });
-      microphoneButton.innerHTML = '<i class="fas fa-microphone icon green"></i>';
-      microphoneButton.style.padding = "14px 21px";
+      icon.classList.add('fa-microphone', 'green');
+      icon.classList.remove('fa-microphone-slash', 'red');
       isMuted = true;
     } catch (error) {
       console.error('Error creating microphone stream:', error);
@@ -232,8 +267,8 @@ async function toggleMicrophone() {
       localStream.microphone = null;
       bnrButton.classList.remove('selected');
     }
-    microphoneButton.innerHTML = '<i class="fas fa-microphone-slash icon red"></i>';
-    microphoneButton.style.padding = "14px 17px";
+    icon.classList.remove('fa-microphone', 'green');
+    icon.classList.add('fa-microphone-slash', 'red');
     isMuted = false;
   }
 }
@@ -262,8 +297,8 @@ async function toggleBNR() {
 
   try {
     if (!bnrEffect) {
-      const audioContext = new AudioContext({ sampleRate: 48000 });
-      bnrEffect = await webex.meetings.createNoiseReductionEffect(audioContext);
+      bnrEffect = await localStream.microphone.getEffectByKind('noise-reduction-effect');
+      bnrEffect = await webex.meetings.createNoiseReductionEffect();
       await localStream.microphone.addEffect(bnrEffect);
     }
 
@@ -290,7 +325,12 @@ async function toggleVBG() {
   }
   try {
     if (!vbgEffect) {
-      vbgEffect = await webex.meetings.createVirtualBackgroundEffect();
+      vbgEffect = await webex.meetings.createVirtualBackgroundEffect(
+        {
+          mode: 'BLUR',
+          blurStrength: 'STRONGER',
+        }
+      );
     }
     if (vbgEffect.isEnabled) {
       await vbgEffect.disable();
@@ -306,7 +346,29 @@ async function toggleVBG() {
   }
 }
 
-// 19) Permission Handling
+//19) Handling Mirror Effect to Local Video.
+mirrorButton.addEventListener('click',toggleMirror);
+async function toggleMirror(){
+  if (!localStream || !localStream.camera || !localStream.camera.outputStream) {
+    console.error('No local video stream available.');
+    return;
+  }
+  if(!mirrorEffect){
+    localVideo.classList.add('mirror');
+    mirrorButton.classList.add('selected');
+    mirrorEffect=true;
+
+  }
+  else{
+    localVideo.classList.remove('mirror');
+    mirrorButton.classList.remove('selected');
+    mirrorEffect=false;
+  }
+
+}
+
+
+// 20) Permission Handling
 async function handlePermissionChange(permissionName) {
   const permission = await navigator.permissions.query({ name: permissionName });
   permission.onchange = async () => {
@@ -314,9 +376,7 @@ async function handlePermissionChange(permissionName) {
       if (permissionName === 'camera') {
         if (isVideoStarted) {
           toggleVideo();
-          vbgEffect=null;
-        } 
-        
+        }
       } else if (permissionName === 'microphone') {
         if (isMuted) {
           await toggleMicrophone();

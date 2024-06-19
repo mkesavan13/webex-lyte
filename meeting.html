@@ -25,24 +25,31 @@
 
           <!-- Leave and Share Buttons -->
           <div class="d-flex justify-content-between mt-2">
-            <button id="leaveMeetingButton"><i class="fa-solid fa-xmark"></i></button>
-            <button id="share" class="btn btn-primary mt-2" title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+            <button id="leaveMeetingButton"><i class="fa-solid fa-xmark" id="leaveicon"></i></button>
+            <button id="share" class="btn btn-primary mt-2" title="Share"><i class="fa-solid fa-arrow-up-from-bracket" id="shareicon"></i></button>
             
           </div>
           <!-- Local Video ,Start/Stop Button ,Unmute/Mute Button -->
           <div class="local-video-container" draggable="true">
             <video id="localVideo" autoplay muted></video>
-            <img src="https://img.icons8.com/?size=100&id=10343&format=png&color=000000" id="localvideoimage">
+            <i class="fa-solid fa-video-slash" id="localvideoimage"></i>
             <div id="muteButtonContainer">
-              <button id="microphone" class="btn btn-primary mt-2" title="Mute/UnMute Audio"><i class="fas fa-microphone icon green"></i></button>
+              <button class="toggle-button" id="microphone">
+                <i id="mic-icon" class="fas fa-microphone green"></i>
+              </button>
               <div class="enableBNR">
                   <div class="enableBNR1" id="bnr">BNR</div>
               </div>
             </div>
             <div id="videoButtonContainer">
-              <button id="video" class="btn btn-primary mt-2" title="Start/Stop Video"><i class="fas fa-video icon green"></i></button>
+            <button class="toggle-button" id="video">
+                <i id="video-icon" class="fas fa-video green"></i>
+            </button>
+        
               <div class="enableVBG">
-                  <div class="enableVBG1" id="vbg">VBG</div>
+                  <div class="enableVBG1" id="vbg">Background Blur</div>
+                  <div class="enableVBG2" id="mirror">Mirror Effect</div>
+
               </div>
             </div>
             
