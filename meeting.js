@@ -275,7 +275,7 @@ async function toggleMicrophone() {
   }
 }
 
-// 16) Added the Local Share System using Share Button.
+// 14) Added the Local Share System using Share Button.
 shareButton.addEventListener('click', localshare);
 async function localshare() {
   const [localShareVideoStream, localShareAudioStream] =
@@ -288,7 +288,7 @@ async function localshare() {
   });
 }
 
-// 17) Enabled BNR using Event Listeners and toggleBNR Function.
+// 15) Enabled BNR using Event Listeners and toggleBNR Function.
 bnrButton.addEventListener('click', toggleBNR);
 async function toggleBNR() {
   let bnrEffect = null;
@@ -318,7 +318,7 @@ async function toggleBNR() {
   }
 }
 
-// 18) Enabled VBG using Event Listeners and toggleVBG Function.
+// 16) Enabled VBG using Event Listeners and toggleVBG Function.
 vbgButton.addEventListener('click', toggleVBG);
 async function toggleVBG() {
   if (!localStream || !localStream.camera || !localStream.camera.outputStream) {
@@ -348,7 +348,7 @@ async function toggleVBG() {
   }
 }
 
-//19) Handling Mirror Effect to Local Video.
+//17) Handling Mirror Effect to Local Video.
 mirrorButton.addEventListener('click',toggleMirror);
 async function toggleMirror(){
   if (!localStream || !localStream.camera || !localStream.camera.outputStream) {
@@ -370,7 +370,7 @@ async function toggleMirror(){
 }
 
 
-// 20) Permission Handling
+// 18) Permission Handling
 async function handlePermissionChange(permissionName) {
   const permission = await navigator.permissions.query({ name: permissionName });
   permission.onchange = async () => {
