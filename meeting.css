@@ -54,7 +54,7 @@ body, html {
     width: 720px;
     height: 550px;
     position: relative;
-    top: -26px;
+    top: 13px;
     left: -5%;
     border-radius: 20px;
     background-color: rgb(96, 96, 96);
@@ -163,8 +163,8 @@ body, html {
 
 /* Style for the local video */
 #localVideo {
-    width: 280px;
-    height: 210px;
+    width: 279px;
+    height: 209px;
     border-radius: 20px;
     background-color: rgb(192, 190, 190);
     content: "LocalVideo";
@@ -316,3 +316,4 @@ body, html {
 .blur {
     backdrop-filter: blur(10px); /* Adjust the blur radius as needed */
 }
+
