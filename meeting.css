@@ -67,6 +67,8 @@ body, html {
     position: relative;
     right: 1%;
     bottom: 2%;
+    object-fit: fill;
+    border-radius: 20px;
 }
 #remoteShare{
     width: 912px; /* Set width */
@@ -87,38 +89,30 @@ body, html {
 /* Unmute Button Style */
 #microphone {
     width: 39px;
-    height: 37px;
+    height: 38px;
     border-radius: 50%;
     background-color: black;
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 16px;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
     position: absolute;
-    left: 14.8rem;
-    top: 2.4rem;
-    padding: 4px 4px;
+    left: 14.3rem;
+    top: 2rem;
+    padding: 9px 8px;
 }
-.green{
-    color: greenyellow;
-}
-.red{
-    color: red;
-}
-.icon{
-    font-size: 15px;
-}
+
 /* Leave Meeting Button Style */
 #leaveMeetingButton {
     background-color: rgb(233, 52, 52);
     position: relative;
-    border-radius: 100px;
-    bottom: 26px;
-    left: 51%;
+    border-radius: 99px;
+    bottom: 31px;
+    left: 49%;
     color: white;
     border: none;
     padding: 17px 22px;
@@ -137,8 +131,8 @@ body, html {
     background-color: rgb(0, 0, 0);
     position: relative;
     border-radius: 100px;
-    bottom: 26px;
-    left: -55%;
+    bottom: 31px;
+    left: -54%;
     color: white;
     border: none;
     padding: 17px 23px;
@@ -157,8 +151,8 @@ body, html {
 /* Local Video and Start Button */
 .local-video-container {
     position: absolute;
-    bottom: 113px;
-    right: 4px;
+    bottom: 81px;
+    right: 10px;
 }
 
 /* Style for the local video */
@@ -182,7 +176,7 @@ body, html {
 }
 /* Start Video Button Style */
 #video {
-    width: 38px;
+    width: 39px;
     height: 40px;
     border-radius: 50%;
     background-color: black;
@@ -190,15 +184,14 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
     position: absolute;
-    left: 14.5rem;
+    left: 14rem;
     top: -1rem;
-    padding: 4px 4px;
-    font-size: 20px;
+    padding: 8px 9px;
+    font-size: 16px;
 }
 
 #muteButtonContainer {
@@ -216,7 +209,7 @@ body, html {
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     top: 2.3rem;
-    left: 4.8rem;
+    left: 4.3rem;
 }
 
 .enableBNR .enableBNR1 {
@@ -253,11 +246,11 @@ body, html {
     position: absolute;
     border-radius: 20px;
     background-color: #e4e4e4;
-    min-width: 160px;
+    min-width: 180px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
-    top: -0.85rem;
-    left: 4.7rem;
+    top: -0.7rem;
+    left: 2.7rem;
 }
 
 .enableVBG .enableVBG1 {
@@ -292,6 +285,39 @@ body, html {
 
 .mirror{
     transform: scaleX(-1);
+}
+
+.loader {
+    border-radius: 49%;
+    animation: spin 2s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#remoteloader{
+    display:none;
+    border: 10px solid #f3f3f3;
+    border-top: 14px solid black;
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    bottom: 18rem;
+    right: 20rem;
+}
+#localloader{
+    display: none;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid black;
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    top: 4rem;
+    left: 7rem;
+
 }
 
 /* Responsiveness */

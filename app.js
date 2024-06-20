@@ -231,14 +231,15 @@ function setMediaListeners() {
 // Set Local Streams
 async function getLocalStreams() {
   try {
+    
     const microphoneStream = await webex.meetings.mediaHelpers.createMicrophoneStream({
       echoCancellation: true,
       noiseSuppression: true,
     });
 
     const cameraStream = await webex.meetings.mediaHelpers.createCameraStream();
+    document.getElementById('localloader').style.display="none";
     localVideo.srcObject = cameraStream.outputStream;
-
     return {
       microphone: microphoneStream,
       camera: cameraStream,
@@ -264,7 +265,7 @@ async function joinMeetingWithMedia(localStreams) {
     };
 
     await createdMeeting.joinWithMedia(meetingOptions);
-
+    document.getElementById('remoteloader').style.display="none";
     document.getElementById('joinMeetingModal').style.display = 'block';
     joinMeetingButton.style.display = 'none';
   } catch (error) {
@@ -278,12 +279,16 @@ async function joinMeeting() {
   document.getElementById("page1").classList.add('blur');
   document.getElementById("localvideoimage").style.display = "none";
   $('#joinMeetingModal').modal('show');
+  document.getElementById('remoteloader').style.display="block";
+  document.getElementById('localloader').style.display="block";
   try {
+    
     await createMeeting();
     setMediaListeners();
     localStream = await getLocalStreams();
     createdMeeting.setRemoteQualityLevel('HIGH');
     await joinMeetingWithMedia(localStream);
+   
   } catch (error) {
     console.error('Error joining meeting:', error);
   }
@@ -296,6 +301,7 @@ async function leaveMeeting() {
     const confirmLeave = window.confirm("Are you sure you want to leave the meeting?");
     if(confirmLeave){
       await createdMeeting.leave();
+      localVideo.srcObject = null;
       document.getElementById("page1").classList.remove('blur');
       $('#joinMeetingModal').modal('hide');
       //for microphone icon reset
@@ -320,6 +326,7 @@ async function leaveMeeting() {
   } catch (error) {
     console.error('Error leaving meeting:', error);
     document.getElementById("page1").classList.remove('blur');
+    localVideo.srcObject = null;
     $('#joinMeetingModal').modal('hide');
     //for microphone icon reset
     if (icon.classList.contains('fa-microphone-slash')) {
@@ -333,6 +340,7 @@ async function leaveMeeting() {
     }
     bnrButton.classList.remove('selected');
     vbgButton.classList.remove('selected');
+    document.getElementById('remoteloader').style.visibility="visible";
     createdMeeting = null;
     localStream = null;
     isMuted = true;

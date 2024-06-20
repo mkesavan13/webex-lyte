@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://img.icons8.com/?size=100&id=995Ah2Szp29l&format=png&color=000000" type="icon/x-image">
-    <title>Webex Meetings</title>
+    <title>Webex Lyte</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -42,35 +42,37 @@
       <div class="modal-content" id="modal1">
         <div class="modal-body">
           <!-- Remote Video -->
-          <video id="remoteVideo" autoplay></video>
+          <video id="remoteVideo" autoplay playsinline></video>
+          <div class="loader" id="remoteloader"></div>
           <audio id="remoteAudio" autoplay hidden></audio>
 
           <!-- Leave and Share Buttons -->
           <div class="d-flex justify-content-between mt-2">
-            <button id="leaveMeetingButton"><i class="fa-solid fa-xmark" id="leaveicon"></i></button>
+            <button id="leaveMeetingButton" class="btn btn-primary mt-2"><i class="fa-solid fa-xmark" id="leaveicon"></i></button>
             <button id="share" class="btn btn-primary mt-2" title="Share"><i class="fa-solid fa-arrow-up-from-bracket" id="shareicon"></i></button>
             
           </div>
           <!-- Local Video ,Start/Stop Button ,Unmute/Mute Button -->
           <div class="local-video-container" draggable="true">
             <video id="localVideo" autoplay muted></video>
+            <div class="loader" id="localloader"></div>
             <i class="fa-solid fa-video-slash" id="localvideoimage"></i>
             <div id="muteButtonContainer">
-              <button class="toggle-button" id="microphone">
+              <button class="btn btn-primary mt-2"id="microphone">
                 <i id="mic-icon" class="fas fa-microphone green"></i>
               </button>
               <div class="enableBNR">
-                  <div class="enableBNR1" id="bnr">BNR</div>
+                  <div class="enableBNR1" id="bnr">Noise Removal</div>
               </div>
             </div>
             <div id="videoButtonContainer">
-            <button class="toggle-button" id="video">
+            <button class="btn btn-primary mt-2" id="video">
                 <i id="video-icon" class="fas fa-video green"></i>
             </button>
         
               <div class="enableVBG">
-                  <div class="enableVBG1" id="vbg">Background Blur</div>
-                  <div class="enableVBG2" id="mirror">Mirror Effect</div>
+                  <div class="enableVBG1" id="vbg">Blur My Background</div>
+                  <div class="enableVBG2" id="mirror">Mirror My Video</div>
 
               </div>
             </div>
