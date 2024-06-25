@@ -62,6 +62,9 @@ h5 {
 #meeting-details {
     padding: 30px;
     flex: 3;
+    position: absolute;
+    left: 50%;
+    top: 3.3rem;
 }
 
 .join-btn {
