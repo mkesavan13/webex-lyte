@@ -20,21 +20,23 @@
     <header>
         <b><h1><img src="https://img.icons8.com/?size=100&id=995Ah2Szp29l&format=png&color=000000" id="image"> Webex Lyte </h1></b>
     </header>
-    <div class="container">
-        <div id="meeting-container" class="row">
+    <div id="page-loader" class="loader" style="display: none;"></div>
+    <div class="container" id="meeting-container" style="display: none;">
+        <div class="row">
             <div id="meeting-lists" class="col-md-4">
                 <div class="meeting-section mb-4">
                     <h5>Ongoing Meetings</h5>
-                    <div id="ongoing-meeting-list" class="meeting-list"></div>
+                    <div id="ongoing-meetings-loader" class="loader" style="display: none;"></div>
+                    <div id="ongoing-meeting-list" class="meeting-list" id="ongoing-meeting-loader"></div>
                 </div>
                 <div class="meeting-section">
                     <h5>Upcoming Meetings</h5>
-                    <div id="upcoming-meeting-list" class="meeting-list"></div>
+                    <div id="upcoming-meetings-loader" class="loader" style="display: none;"></div>
+                    <div id="upcoming-meeting-list" class="meeting-list" id="upcoming-meeting-loader"></div>
                 </div>
             </div>
             <div id="meeting-details" class="col-md-8"></div>
         </div>
-    </div>
     </div>
         <!-- Bootstrap Modal -->
 <div class="modal fade" id="joinMeetingModal" tabindex="-1" role="dialog" aria-labelledby="joinMeetingModalLabel" aria-hidden="true" data-backdrop="static">
