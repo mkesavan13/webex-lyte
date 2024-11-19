@@ -1,19 +1,11 @@
-// Prerequisite Access Token(Hard Coded)
-const myAccessToken = "";
+let webex;
 let sip;
-
-// Initialization and Registration
-const webex = window.Webex.init({
-    credentials: {
-      access_token: myAccessToken
-    }
-  });
-  
-  webex.meetings.register()
-    .catch((err) => {
-      console.error('Error registering Webex device:', err);
-      alert('Error registering Webex device. Check console for details.');
-    });
+let accessToken;
+let ongoingMeetingListElement;
+let upcomingMeetingListElement;
+let meetingDetailsElement;
+const redirectUri = window.location.origin;
+const scope = 'spark:all meeting:schedules_read';
 
 // Function to format date to ISO string with timezone offset
 function toISOStringWithOffset(date) {
@@ -30,134 +22,329 @@ function toISOStringWithOffset(date) {
         ':' + pad(date.getMinutes()) +
         ':' + pad(date.getSeconds()) +
         dif + pad(Math.floor(Math.abs(tzo) / 60)) +
-        ':' + pad(Math.abs(tzo) % 60);
-  }
-  
+        ':' + pad(Math.abs(tzo % 60));
+}
+
 // Get current date and the end of the day
 const now = new Date();
 const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
 const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-  
+
 // Format dates to ISO strings with timezone offsets
 const fromDate = toISOStringWithOffset(startOfDay);
 const toDate = toISOStringWithOffset(endOfDay);
-  
-const apiUrl = `https://webexapis.com/v1/meetings?meetingType=scheduledMeeting&from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}`;
-let ongoingMeetingListElement;
-let upcomingMeetingListElement;
-let meetingDetailsElement;
-async function fetchMeetings() {
-    try {
-        const response = await fetch(apiUrl, {
-            headers: {
-                'Authorization': `Bearer ${myAccessToken}`
-            }
-        });
-        const data = await response.json();
-        console.log('API Response:', data); // Log the full response
 
-        if (Array.isArray(data.items)) {
-            displayOngoingMeetings(data.items);
-            displayUpcomingMeetings(data.items);
-        } else {
-            throw new Error("Received data is not an array");
-        }
-    } catch (error) {
-        console.error('Error fetching meetings:', error);
-        ongoingMeetingListElement.innerHTML = '<p>Failed to load ongoing meetings. Please try again later.</p>';
-        upcomingMeetingListElement.innerHTML = '<p>Failed to load upcoming meetings. Please try again later.</p>';
+const apiUrl = `https://webexapis.com/v1/meetings?meetingType=scheduledMeeting&from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}`;
+
+// Function to set a cookie
+function setCookie(name, value, hours) {
+    const d = new Date();
+    d.setTime(d.getTime() + (hours * 60 * 60 * 1000));
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+// Function to get a cookie by name
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+// Function to check if a cookie exists
+function checkCookie(name) {
+    const cookie = getCookie(name);
+    return cookie !== null;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+function initOauth() {
+  if (checkCookie('access_token')) {
+      accessToken = getCookie('access_token');
+      initializeWebex(accessToken);
+  } else {
+      webex = window.webex = Webex.init({
+          config: {
+              appName: 'Webex Meetings App',
+              appPlatform: 'web',
+              credentials: {
+                  client_id: 'Ca99a9ffb2e619475b9d66ad50a213586223e5cd9089579f47f63487b590afe4c',
+                  redirect_uri: redirectUri,
+                  scope: scope
+              }
+          }
+      });
+
+      webex.once('ready', () => {
+          if (webex.canAuthorize) {
+              accessToken = webex.credentials.supertoken.access_token;
+              setCookie('access_token', accessToken, 24);
+              initializeWebex(accessToken);
+          } else {
+              redirectToLogin();
+          }
+      });
+  }
+}
+
+function initializeWebex(token) {
+  if (!window.webex) {
+      webex = window.webex = Webex.init({
+          credentials: {
+              access_token: token
+          }
+      });
+  }
+  if (!webex.meetings.registered) {
+    webex.meetings.register()
+        .then(() => {
+            console.log('Device registered successfully');
+            showMeetingContainer();
+            Promise.all([fetchOngoingMeetings(), fetchMeetings()])
+                .finally(() => {
+                    setTimeout(() => hideLoader('page-loader'), 4000); 
+                });
+        })
+        .catch((error) => {
+            console.error('Error registering the meetings plugin:', error);
+        });
+} else {
+    console.log('Device is already registered');
+    showMeetingContainer();
+    Promise.all([fetchOngoingMeetings(), fetchMeetings()])
+        .finally(() => {
+            setTimeout(() => hideLoader('page-loader'), 4000); 
+        });
+}
+}
+
+
+function redirectToLogin() {
+    webex.authorization.initiateLogin();
+}
+
+function showMeetingContainer() {
+    const loginContainer = document.querySelector('.login-container');
+    const meetingContainer = document.getElementById('meeting-container');
+    if (loginContainer) {
+        loginContainer.style.display = 'none';
+    }
+    if (meetingContainer) {
+        meetingContainer.style.display = 'block';
     }
 }
 
-function displayMeetingDetails(meeting) {
-    meetingDetailsElement.innerHTML = ''; // Clear previous details
-    sip=meeting.sipAddress;
+function showLoader(loaderId) {
+  document.getElementById(loaderId).style.display = 'block';
+}
 
+function hideLoader(loaderId) {
+  document.getElementById(loaderId).style.display = 'none';
+}
+
+// Fetch Ongoing Meetings with Webex SDK
+async function fetchOngoingMeetings() {
+  showLoader('ongoing-meetings-loader');
+  ongoingMeetingListElement.style.display = 'none'; // Ensure the list is hidden initially
+
+  try {
+      await webex.meetings.syncMeetings();
+      const meetingList = webex.meetings.getAllMeetings();
+      console.log(meetingList);
+      
+      // Convert the meetingList object to an array of meeting objects
+      const meetingsArray = await Promise.all(Object.values(meetingList).map(async (meeting) => {
+          return {
+              id: meeting.id,
+              title: meeting.meetingInfo.topic,
+              start: meeting.locusInfo && meeting.locusInfo.fullState && meeting.locusInfo.fullState.lastActive,
+              hostDisplayName: meeting.meetingInfo.displayName,
+              webLink: meeting.meetingJoinUrl,
+              meetingNumber: meeting.meetingNumber, 
+              hostKey: meeting.meetingInfo.hostKey, 
+              password: meeting.meetingInfo.password, 
+              sipAddress: meeting.sipUri 
+          };
+      }));
+
+      // Use createMeetingList to display ongoing meetings
+      createOngoingMeetingList(
+          meetingsArray,
+          () => true, // No filter function needed, as all meetings in meetingList are ongoing
+          ongoingMeetingListElement,
+          'No current meetings found.',
+          displayMeetingDetails // Pass the handler function
+      );
+  } catch (error) {
+      console.error('Error fetching ongoing meetings:', error);
+      ongoingMeetingListElement.innerHTML = '<p>Error retrieving current meetings. Please check the console for details.</p>';
+  }
+  finally {
+      hideLoader('ongoing-meetings-loader'); // Hide ongoing meetings loader after fetching
+      setTimeout(() => {
+          ongoingMeetingListElement.style.display = 'block'; // Show the meeting list after the delay
+      }, 3000); // 2-second delay
+  }
+}
+
+
+
+// Fetch Meetings with OAuth Token
+async function fetchMeetings() {
+  showLoader('upcoming-meetings-loader');
+  upcomingMeetingListElement.style.display = 'none'; // Ensure the list is hidden initially
+
+  try {
+      const response = await fetch(apiUrl, {
+          headers: {
+              'Authorization': `Bearer ${accessToken}`
+          }
+      });
+      const data = await response.json();
+      console.log('API Response:', data); // Log the full response
+
+      if (Array.isArray(data.items)) {
+          displayUpcomingMeetings(data.items);
+      } else {
+          throw new Error("Received data is not an array");
+      }
+  } catch (error) {
+      console.error('Error fetching meetings:', error);
+      upcomingMeetingListElement.innerHTML = '<p>Failed to load upcoming meetings. Please try again later.</p>';
+  }
+  finally {
+      hideLoader('upcoming-meetings-loader'); // Hide upcoming meetings loader after fetching
+      setTimeout(() => {
+          upcomingMeetingListElement.style.display = 'block'; // Show the meeting list after the delay
+      }, 3000); // 2-second delay
+  }
+}
+
+function createOngoingMeetingList(meetings, filterFn, listElement, emptyMessage, detailsHandler) {
+  const filteredMeetings = meetings.filter(filterFn);
+
+  if (filteredMeetings.length === 0) {
+      listElement.innerHTML = `<p>${emptyMessage}</p>`;
+      return;
+  }
+
+  listElement.innerHTML = '';
+
+  filteredMeetings.forEach(meeting => {
+      const meetingElement = document.createElement('div');
+      meetingElement.classList.add('meeting');
+
+      meetingElement.onclick = () => detailsHandler(meeting);
+
+      const meetingTitle = document.createElement('h2');
+      meetingTitle.textContent = meeting.title || 'No title provided';
+      meetingElement.appendChild(meetingTitle);
+
+      const meetingDate = document.createElement('p');
+      meetingDate.textContent = `Date: ${new Date(meeting.start).toLocaleString()}`;
+      meetingElement.appendChild(meetingDate);
+
+      const meetingOrganizer = document.createElement('p');
+      meetingOrganizer.textContent = `Organizer: ${meeting.hostDisplayName || 'Unknown'}`;
+      meetingElement.appendChild(meetingOrganizer);
+
+      listElement.appendChild(meetingElement);
+  });
+}
+
+// Display meeting details
+function displayMeetingDetails(meeting) {
+    meetingDetailsElement.innerHTML = ''; 
+    sip=meeting.webLink;
     const detailsHTML = `
-    <p><strong style="color:#00aaff;">Meeting Title</strong></p>
-    <p>${meeting.title}</p>
-    <p><strong style="color:#00aaff;">Meeting Link</strong></p>
-    <p>${meeting.webLink}</p>
-    <p><strong style="color:#00aaff">Meeting Number</strong></p>
-    <p>${meeting.meetingNumber}</p>
-    <p><strong style="color:#00aaff">Host Key</strong></p>
-    <p>${meeting.hostKey}</p>
-    <p><strong style="color:#00aaff">Password</strong></p>
-    <p>${meeting.password}</p>
-    <p><strong style="color:#00aaff">Access Code</strong></p>
-    <p>${meeting.telephony.accessCode}</p>
-    <p><strong style="color:#00aaff">Sip Address</strong></p>
-    <p>${meeting.sipAddress}<p/>
-`;
-meetingDetailsElement.innerHTML = detailsHTML;
+        <p><strong style="color:#00aaff;">Meeting Title</strong></p>
+        <p>${meeting.title}</p>
+        <p><strong style="color:#00aaff;">Meeting Link</strong></p>
+        <p>${meeting.webLink}</p>
+        <p><strong style="color:#00aaff">Meeting Number</strong></p>
+        <p>${meeting.meetingNumber}</p>
+        <p><strong style="color:#00aaff">Password</strong></p>
+        <p>${meeting.password}</p>
+        <p><strong style="color:#00aaff">Sip Address</strong></p>
+        <p>${meeting.sipAddress}<p/>
+    `;
+    meetingDetailsElement.innerHTML = detailsHTML;
 
     const joinButton = document.createElement('button');
     joinButton.innerText = 'Join Meeting';
-    joinButton.addEventListener('click',joinMeeting)
     joinButton.classList.add('btn', 'join-btn');
+    joinButton.addEventListener('click',joinMeeting);
     meetingDetailsElement.appendChild(joinButton);
 }
+
+
+// Create meeting list
 function createMeetingList(meetings, filterFn, listElement, emptyMessage) {
-    const filteredMeetings = meetings.filter(filterFn);
+  const filteredMeetings = meetings.filter(filterFn);
 
-    if (filteredMeetings.length === 0) {
-        listElement.innerHTML = `<p>${emptyMessage}</p>`;
-        return;
-    }
+  if (filteredMeetings.length === 0) {
+      listElement.innerHTML = `<p>${emptyMessage}</p>`;
+      return;
+  }
 
-    listElement.innerHTML = '';
+  listElement.innerHTML = '';
 
-    filteredMeetings.forEach(meeting => {
-        const meetingElement = document.createElement('div');
-        meetingElement.classList.add('meeting');
+  filteredMeetings.forEach(meeting => {
+      const meetingElement = document.createElement('div');
+      meetingElement.classList.add('meeting');
 
-        meetingElement.onclick = () => displayMeetingDetails(meeting);
+      meetingElement.onclick = () => displayMeetingDetails(meeting);
 
-        const meetingTitle = document.createElement('h2');
-        meetingTitle.textContent = meeting.title || 'No title provided';
-        meetingElement.appendChild(meetingTitle);
+      const meetingTitle = document.createElement('h2');
+      meetingTitle.textContent = meeting.title || 'No title provided';
+      meetingElement.appendChild(meetingTitle);
 
-        const meetingDate = document.createElement('p');
-        meetingDate.textContent = `Date: ${new Date(meeting.start).toLocaleString()}`;
-        meetingElement.appendChild(meetingDate);
+      const meetingDate = document.createElement('p');
+      meetingDate.textContent = `Date: ${new Date(meeting.start).toLocaleString()}`;
+      meetingElement.appendChild(meetingDate);
 
-        const meetingOrganizer = document.createElement('p');
-        meetingOrganizer.textContent = `Organizer: ${meeting.hostDisplayName || 'Unknown'}`;
-        meetingElement.appendChild(meetingOrganizer);
+      const meetingOrganizer = document.createElement('p');
+      meetingOrganizer.textContent = `Organizer: ${meeting.hostDisplayName || 'Unknown'}`;
+      meetingElement.appendChild(meetingOrganizer);
 
-        listElement.appendChild(meetingElement);
-    });
+      listElement.appendChild(meetingElement);
+  });
 }
 
-function displayOngoingMeetings(meetings) {
-    const now = new Date();
-    createMeetingList(
-        meetings,
-        meeting => {
-            const start = new Date(meeting.start);
-            const end = new Date(meeting.end);
-            return start <= now && now <= end;
-        },
-        ongoingMeetingListElement,
-        'No current meetings found.'
-    );
-}
 
+// Display upcoming meetings
 function displayUpcomingMeetings(meetings) {
     const now = new Date();
     createMeetingList(
         meetings,
-        meeting =>
-            new Date(meeting.start) > now,
-            upcomingMeetingListElement,
-            'No upcoming meetings found.'
+        meeting => new Date(meeting.start) > now,
+        upcomingMeetingListElement,
+        'No upcoming meetings found.'
     );
 }
+
+/// DOMContentLoaded event handler
 document.addEventListener('DOMContentLoaded', () => {
-    ongoingMeetingListElement = document.getElementById('ongoing-meeting-list');
-    upcomingMeetingListElement = document.getElementById('upcoming-meeting-list');
-    meetingDetailsElement = document.getElementById('meeting-details');
-    fetchMeetings();
+  ongoingMeetingListElement = document.getElementById('ongoing-meeting-list');
+  upcomingMeetingListElement = document.getElementById('upcoming-meeting-list');
+  meetingDetailsElement = document.getElementById('meeting-details');
+  showLoader('page-loader'); // Show page loader initially
+  
+  initOauth(); 
+  Promise.all([
+      fetchOngoingMeetings(),
+      fetchMeetings()
+  ]).finally(() => {
+      setTimeout(() => hideLoader('page-loader'), 4000); // 2-second delay
+  });
 });
 
 // Join Meeting Process
@@ -182,6 +369,8 @@ let isMuted = true;
 let isVideoStarted = true;
 let vbgEffect = false;
 let mirrorEffect = false;
+
+
 
 // Created Meeting
 async function createMeeting() {
